@@ -108,8 +108,12 @@ int main()
 		glUniform4f(colorLoc, 0.0f, 0.0f, 1.0f, 1.0f); //enviando cor para variável uniform inputColor
 
 		// Chamada de desenho - drawcall
-		// Poligono apenas com contorno - GL_POINTS
+		// Poligono com todas formações
 		glDrawArrays(GL_POINTS, 0, 6);
+		glUniform4f(colorLoc, 0.0f, 1.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_LINE_LOOP, 0, 6);
+		glUniform4f(colorLoc, 1.0f, 0.0f, 0.0f, 1.0f);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
 
