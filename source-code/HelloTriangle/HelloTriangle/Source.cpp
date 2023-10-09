@@ -69,12 +69,16 @@ int main()
 	GLuint VAO = setupGeometry();
 		
 	glm::mat4 projection = glm::mat4(1); //matriz identidade
+	glm::mat4 model = glm::mat4(1);
+	model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
+	model = glm::scale(model, glm::vec3(300.0, 225.0, 1.0));
 	
 	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
 	
 	shader.Use();
 
 	shader.setMat4("projection", glm::value_ptr(projection));
+	shader.setMat4("model", glm::value_ptr(model));
 
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
@@ -82,60 +86,37 @@ int main()
 		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as funções de callback correspondentes
 		glfwPollEvents();
 
+		glfwGetFramebufferSize(window, &width, &height);
+		glViewport(width / 2, height / 2, width / 2, height / 2);
+
 		// Limpa o buffer de cor
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glLineWidth(10);
-		glPointSize(20);
+		glLineWidth(5);
+		glPointSize(10);
 
-		// Recuperando o tamanho da janela da aplicação
-		glfwGetFramebufferSize(window, &width, &height);
-		// Dimensiona a viewport
-		glViewport(width / 2, height / 2, width / 2, height / 2);
 		glBindVertexArray(VAO); //Conectando ao buffer de geometria
 
+		glm::mat4 model = glm::mat4(1); //matriz identidade
+		model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
+		model = glm::scale(model, glm::vec3(300.0, 225.0, 1.0));
+		shader.setMat4("model", glm::value_ptr(model));
+
 		shader.setVec4("inputColor", 0.0, 0.0, 1.0, 1.0); //enviando cor para variável uniform inputColor
 
-		// Chamada de desenho - drawcall
-		// Poligono Preenchido - GL_TRIANGLES
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		
-		// Chamada de desenho - drawcall
-		// Contorno - Loop de linhas - GL_LINE_LOOP
-		shader.setVec4("inputColor", 1.0, 1.0, 0.0, 1.0);
-		glDrawArrays(GL_LINE_LOOP, 0, 3);
-		shader.setVec4("inputColor", 0.0, 1.0, 1.0, 1.0);
-		glDrawArrays(GL_LINE_LOOP, 3, 3);
-
-		// Chamada de desenho - drawcall
-		// PONTOS - GL_POINTS
-		shader.setVec4("inputColor", 1.0, 0.0, 1.0, 1.0);
-		glDrawArrays(GL_POINTS, 0, 6);
-		
-
-		// Dimensiona a segunda viewport
+		// desenho de triangulo
 		glViewport(0, 0, width / 2, height / 2);
-		shader.setVec4("inputColor", 0.0, 0.0, 1.0, 1.0); //enviando cor para variável uniform inputColor
-
-		// Chamada de desenho - drawcall
-		// Poligono Preenchido - GL_TRIANGLES
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		// Chamada de desenho - drawcall
-		// Contorno - Loop de linhas - GL_LINE_LOOP
-		shader.setVec4("inputColor", 1.0, 1.0, 0.0, 1.0);
-		glDrawArrays(GL_LINE_LOOP, 0, 3);
-		shader.setVec4("inputColor", 0.0, 1.0, 1.0, 1.0);
-		glDrawArrays(GL_LINE_LOOP, 3, 3);
+		glViewport(width / 2, 0, width / 2, height / 2);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		// Chamada de desenho - drawcall
-		// PONTOS - GL_POINTS
-		shader.setVec4("inputColor", 1.0, 0.0, 1.0, 1.0);
-		glDrawArrays(GL_POINTS, 0, 6);
+		glViewport(0, height / 2, width / 2, height / 2);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
-
-
+		glViewport(width / 2, height / 2, width / 2, height / 2);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
 
