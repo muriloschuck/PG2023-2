@@ -70,7 +70,7 @@ int main()
 		
 	glm::mat4 projection = glm::mat4(1); //matriz identidade
 	
-	projection = glm::ortho(-10.0, 10.0, -10.0, 10.0, -1.0, 1.0);
+	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
 	
 	shader.Use();
 
@@ -99,7 +99,7 @@ int main()
 
 		// Chamada de desenho - drawcall
 		// Poligono Preenchido - GL_TRIANGLES
-		glDrawArrays(GL_TRIANGLES, 30, 15);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 		
 		// Chamada de desenho - drawcall
 		// Contorno - Loop de linhas - GL_LINE_LOOP
