@@ -10,14 +10,14 @@
 #include <iostream>
 #include <string>
 #include <assert.h>
-
-using namespace std;
-
-
-// GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include "Shader.h"
+
+using namespace std;
 
 //Classe para manipulação dos shaders
 #include "Shader.h"
@@ -69,25 +69,18 @@ int main()
 	GLuint VAO = setupGeometry();
 		
 	glm::mat4 projection = glm::mat4(1); //matriz identidade
-	glm::mat4 model = glm::mat4(1);
-	model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
-	model = glm::scale(model, glm::vec3(300.0, 225.0, 1.0));
 	
-	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f, -1.0f, 1.0f);
+	projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0);
 	
 	shader.Use();
 
 	shader.setMat4("projection", glm::value_ptr(projection));
-	shader.setMat4("model", glm::value_ptr(model));
 
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
 		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as funções de callback correspondentes
 		glfwPollEvents();
-
-		glfwGetFramebufferSize(window, &width, &height);
-		glViewport(width / 2, height / 2, width / 2, height / 2);
 
 		// Limpa o buffer de cor
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
@@ -96,29 +89,39 @@ int main()
 		glLineWidth(5);
 		glPointSize(10);
 
+		// Recuperando o tamanho da janela da aplicação
+		glfwGetFramebufferSize(window, &width, &height);
+		// Dimensiona a viewport
+		glViewport(0, 0, width, height);
 		glBindVertexArray(VAO); //Conectando ao buffer de geometria
 
-		glm::mat4 model = glm::mat4(1); //matriz identidade
+		glm::mat4 model = glm::mat4(1);
 		model = glm::translate(model, glm::vec3(400.0, 300.0, 0.0));
-		model = glm::scale(model, glm::vec3(300.0, 225.0, 1.0));
+		model = glm::scale(model, glm::vec3(100.0, 75.0, 1.0));
 		shader.setMat4("model", glm::value_ptr(model));
-
-		shader.setVec4("inputColor", 0.0, 0.0, 1.0, 1.0); //enviando cor para variável uniform inputColor
-
-		// desenho de triangulo
-		glViewport(0, 0, width / 2, height / 2);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		glViewport(width / 2, 0, width / 2, height / 2);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		glViewport(0, height / 2, width / 2, height / 2);
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-
-		glViewport(width / 2, height / 2, width / 2, height / 2);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
+
+		glBindVertexArray(VAO); //Conectando ao buffer de geometria
+
+
+		model = glm::mat4(1); 
+		model = glm::translate(model, glm::vec3(200.0, 100.0, 0.0));
+		model = glm::scale(model, glm::vec3(100.0, 75.0, 1.0));
+		shader.setMat4("model", glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+
+		glBindVertexArray(0); //Desconectando o buffer de geometria
+
+		glBindVertexArray(VAO); //Conectando ao buffer de geometria
+
+
+		model = glm::mat4(1);
+		model = glm::translate(model, glm::vec3(600.0, 500.0, 0.0));
+		model = glm::scale(model, glm::vec3(100.0, 75.0, 1.0));
+		shader.setMat4("model", glm::value_ptr(model));
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		// Troca os buffers da tela
 		glfwSwapBuffers(window);
@@ -158,7 +161,7 @@ int setupGeometry()
 
 		 0.0,  0.0, 0.0, //v3
 		-0.5, -0.5, 0.0, //v4
-		 0.5, -0.5, 0.0, //v5 
+		 0.5, -0.5, 0.0 //v5 
 	};
 
 	GLuint VBO, VAO;
